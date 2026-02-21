@@ -294,9 +294,23 @@ app.get('/invite/:id', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`\n🎓 Graduación Eduardo - Sistema de Invitaciones`);
-  console.log(`\n✓ Server running at http://localhost:${PORT}`);
-  console.log(`✓ API health check: http://localhost:${PORT}/api/health\n`);
+// Serve admin.html
+app.get('/admin.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
+
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+});
+
+// Export for Vercel
+module.exports = app;
+
+// Start server (only for local development)
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`\n🎓 Graduación Eduardo - Sistema de Invitaciones`);
+    console.log(`\n✓ Server running at http://localhost:${PORT}`);
+    console.log(`✓ API health check: http://localhost:${PORT}/api/health\n`);
+  });
+}
