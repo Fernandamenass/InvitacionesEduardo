@@ -1,0 +1,17 @@
+node_modules
+.env
+.env.local
+*.test.js
+vitest.config.js
+data/*.db
+data/*.db-journal
+.git
+.gitignore
+README.md
+check-db.js
+test-confirm.js
+test-admin-guests.js
+fix-companions.js
+clean-test-companion.js
+create-test-guest.js
+create-example-excel.js

@@ -1,0 +1,21 @@
+{
+  "version": 2,
+  "rewrites": [
+    { "source": "/api/health", "destination": "/api/health.js" },
+    { "source": "/api/guest", "destination": "/api/guest.js" },
+    { "source": "/api/guest/:id", "destination": "/api/guest.js?id=:id" },
+    { "source": "/api/confirm", "destination": "/api/confirm.js" },
+    { "source": "/api/admin/auth", "destination": "/api/admin/auth.js" },
+    { "source": "/api/admin/import", "destination": "/api/admin/import.js" },
+    { "source": "/api/admin/guests", "destination": "/api/admin/guests.js" },
+    { "source": "/api/admin/export", "destination": "/api/admin/export.js" },
+    { "source": "/invite/:id", "destination": "/index.html" },
+    { "source": "/admin", "destination": "/admin.html" }
+  ],
+  "functions": {
+    "api/**/*.js": {
+      "memory": 1024,
+      "maxDuration": 10
+    }
+  }
+}

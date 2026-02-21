@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Graduación Eduardo - Ingeniería en Sistemas</title>
+  <link rel="stylesheet" href="/styles.css?v=2">
+</head>
+<body>
+  <!-- Loading State -->
+  <div id="loading" class="loading">
+    <div class="loading-spinner"></div>
+    <p>Cargando invitación...</p>
+  </div>
+
+  <!-- Error State -->
+  <div id="error" class="error-container hidden">
+    <div class="error-content">
+      <h1>⚠️ Error</h1>
+      <p id="error-message">El enlace de invitación es inválido o no existe</p>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div id="main-content" class="hidden">
+    <!-- Header -->
+    <header class="header">
+      <h1>🎓 Graduación de Eduardo</h1>
+      <h2>Ingeniería en Sistemas</h2>
+    </header>
+
+    <!-- Welcome Section -->
+    <section class="welcome">
+      <p class="greeting">Hola, <span id="guest-name" class="guest-name">...</span>!</p>
+      <p class="invitation-text">Estás cordialmente invitado a mi graduación</p>
+    </section>
+
+    <!-- Event Info Section -->
+    <section class="event-info">
+      <h3><span class="code-icon">&gt;</span> Información del Evento</h3>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-label">📅 Fecha:</span>
+          <span class="info-value">Por confirmar</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">🕐 Hora:</span>
+          <span class="info-value">Por confirmar</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">📍 Lugar:</span>
+          <span class="info-value">Por confirmar</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">🎫 Pases disponibles:</span>
+          <span id="max-companions" class="info-value">...</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Confirmation Form Section -->
+    <section class="confirmation-section">
+      <h3><span class="code-icon">&gt;</span> Confirmación de Asistencia</h3>
+      
+      <!-- Initial Confirmation Button -->
+      <div id="initial-confirm" class="initial-confirm">
+        <button id="confirm-btn" class="btn-primary">
+          Confirmar Asistencia
+        </button>
+      </div>
+
+      <!-- Companions Form (hidden initially) -->
+      <div id="companions-form" class="companions-form hidden">
+        <p class="form-description">¿Traerás acompañantes?</p>
+        
+        <!-- Companion Counter -->
+        <div class="companion-counter">
+          <span id="companion-count">0</span>/<span id="companion-limit">0</span> acompañantes
+        </div>
+
+        <!-- Add Companion Input -->
+        <div class="add-companion">
+          <input 
+            type="text" 
+            id="companion-input" 
+            placeholder="Nombre del acompañante"
+            maxlength="100"
+          />
+          <button id="add-companion-btn" class="btn-secondary">
+            Agregar
+          </button>
+        </div>
+
+        <!-- Companions List -->
+        <div id="companions-list" class="companions-list"></div>
+
+        <!-- Submit Button -->
+        <button id="submit-btn" class="btn-primary">
+          Enviar Confirmación
+        </button>
+      </div>
+
+      <!-- Success Message (hidden initially) -->
+      <div id="success-message" class="success-message hidden">
+        <p>✓ Confirmación guardada exitosamente</p>
+        <p class="success-detail">¡Nos vemos en la celebración!</p>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+    </footer>
+  </div>
+
+  <script src="/script.js?v=2"></script>
+</body>
+</html>

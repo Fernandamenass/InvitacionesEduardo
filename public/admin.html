@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin - Graduación Eduardo</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .admin-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .admin-section {
+            background: #2c2c2c;
+            border: 1px solid #3f51b5;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .admin-section h2 {
+            color: #3f51b5;
+            font-family: 'Courier New', monospace;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        /* Import Section */
+        .drop-zone {
+            border: 2px dashed #c0c0c0;
+            border-radius: 8px;
+            padding: 3rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #212121;
+        }
+
+        .drop-zone:hover,
+        .drop-zone.drag-over {
+            border-color: #3f51b5;
+            background: #1a237e;
+        }
+
+        .drop-zone-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #c0c0c0;
+        }
+
+        .drop-zone-text {
+            color: #e0e0e0;
+            font-size: 1.1rem;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .import-preview {
+            margin-top: 1.5rem;
+            display: none;
+        }
+
+        .import-preview.visible {
+            display: block;
+        }
+
+        .preview-info {
+            background: #212121;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+
+        .preview-info p {
+            margin: 0.5rem 0;
+            color: #e0e0e0;
+        }
+
+        /* Guest List Section */
+        .guests-table-container {
+            overflow-x: auto;
+        }
+
+        .guests-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .guests-table th,
+        .guests-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #3f51b5;
+        }
+
+        .guests-table th {
+            background: #1a237e;
+            color: #c0c0c0;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+
+        .guests-table td {
+            color: #e0e0e0;
+        }
+
+        .guests-table tr:hover {
+            background: #1a237e;
+        }
+
+        .link-cell {
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .status-confirmed {
+            background: #4caf50;
+            color: #fff;
+        }
+
+        .status-pending {
+            background: #ff9800;
+            color: #fff;
+        }
+
+        .copy-btn {
+            background: #3f51b5;
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            transition: background 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: #1a237e;
+        }
+
+        .copy-btn.copied {
+            background: #4caf50;
+        }
+
+        /* Export Section */
+        .export-summary {
+            background: #212121;
+            padding: 1.5rem;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+        }
+
+        .export-summary h3 {
+            color: #3f51b5;
+            margin-bottom: 1rem;
+            font-family: 'Courier New', monospace;
+        }
+
+        .export-stat {
+            display: flex;
+            justify-content: space-between;
+            margin: 0.5rem 0;
+            color: #e0e0e0;
+        }
+
+        .export-stat-value {
+            font-weight: bold;
+            color: #c0c0c0;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: #3f51b5;
+            color: #fff;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            transition: background 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn-primary:hover {
+            background: #1a237e;
+        }
+
+        .btn-primary:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #c0c0c0;
+            color: #212121;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            transition: background 0.3s ease;
+            margin-left: 1rem;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        /* Loading and Messages */
+        .loading {
+            text-align: center;
+            color: #3f51b5;
+            margin: 1rem 0;
+            display: none;
+        }
+
+        .loading.visible {
+            display: block;
+        }
+
+        .message {
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+            display: none;
+        }
+
+        .message.visible {
+            display: block;
+        }
+
+        .message.success {
+            background: #4caf50;
+            color: #fff;
+        }
+
+        .message.error {
+            background: #f44336;
+            color: #fff;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #c0c0c0;
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Auth Modal */
+        .auth-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .auth-modal.hidden {
+            display: none;
+        }
+
+        .auth-content {
+            background: #2c2c2c;
+            padding: 3rem;
+            border-radius: 8px;
+            border: 2px solid #3f51b5;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .auth-content h2 {
+            color: #3f51b5;
+            font-family: 'Courier New', monospace;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .auth-input {
+            width: 100%;
+            padding: 0.75rem;
+            background: #212121;
+            border: 1px solid #3f51b5;
+            border-radius: 4px;
+            color: #e0e0e0;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .auth-error {
+            color: #f44336;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .auth-error.visible {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- Auth Modal -->
+    <div id="authModal" class="auth-modal">
+        <div class="auth-content">
+            <h2>// admin.authenticate()</h2>
+            <p style="color: #c0c0c0; margin-bottom: 1.5rem; text-align: center;">
+                Ingresa la contraseña de administrador
+            </p>
+            <input 
+                type="password" 
+                id="passwordInput" 
+                class="auth-input" 
+                placeholder="password"
+                autocomplete="current-password"
+            >
+            <div id="authError" class="auth-error">
+                Contraseña incorrecta
+            </div>
+            <button onclick="authenticate()" class="btn-primary" style="width: 100%;">
+                execute(LOGIN);
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Admin Panel -->
+    <div id="adminPanel" class="admin-container" style="display: none;">
+        <div class="admin-header">
+            <h1>// Panel Administrativo</h1>
+            <p style="color: #c0c0c0;">Graduación de Eduardo - Ingeniería en Sistemas</p>
+        </div>
+
+        <!-- Import Section -->
+        <div class="admin-section">
+            <h2>&gt; 1. Importar Invitados</h2>
+            <div 
+                id="dropZone" 
+                class="drop-zone"
+                onclick="document.getElementById('fileInput').click()"
+            >
+                <div class="drop-zone-icon">📁</div>
+                <div class="drop-zone-text">
+                    <strong>Arrastra un archivo Excel aquí</strong><br>
+                    o haz clic para seleccionar<br>
+                    <small style="color: #c0c0c0;">(formato: nombre, telefono, pases)</small>
+                </div>
+            </div>
+            <input 
+                type="file" 
+                id="fileInput" 
+                class="file-input" 
+                accept=".xlsx,.xls"
+            >
+            
+            <div id="importPreview" class="import-preview">
+                <div class="preview-info">
+                    <p><strong>Archivo:</strong> <span id="fileName"></span></p>
+                    <p><strong>Invitados a importar:</strong> <span id="guestCount"></span></p>
+                </div>
+                <button onclick="confirmImport()" class="btn-primary">
+                    import_guests();
+                </button>
+                <button onclick="cancelImport()" class="btn-secondary">
+                    cancel();
+                </button>
+            </div>
+
+            <div id="importLoading" class="loading">
+                <p>⏳ Procesando archivo...</p>
+            </div>
+
+            <div id="importMessage" class="message"></div>
+        </div>
+
+        <!-- Guest List Section -->
+        <div class="admin-section">
+            <h2>&gt; 2. Lista de Invitados</h2>
+            <div style="margin-bottom: 1rem;">
+                <button onclick="loadGuests()" class="btn-primary">
+                    refresh_list();
+                </button>
+                <button onclick="copyAllLinks()" class="btn-secondary">
+                    copy_all_links();
+                </button>
+                <button onclick="clearAllGuests()" class="btn-secondary" style="background: #f44336; color: #fff;">
+                    clear_all();
+                </button>
+            </div>
+
+            <div id="guestsLoading" class="loading">
+                <p>⏳ Cargando invitados...</p>
+            </div>
+
+            <div id="guestsMessage" class="message"></div>
+
+            <div id="guestsTableContainer" class="guests-table-container">
+                <!-- Table will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Export Section -->
+        <div class="admin-section">
+            <h2>&gt; 3. Exportar Confirmaciones</h2>
+            <div id="exportSummary" class="export-summary">
+                <h3>// Resumen</h3>
+                <div class="export-stat">
+                    <span>Total de invitados:</span>
+                    <span class="export-stat-value" id="totalGuests">0</span>
+                </div>
+                <div class="export-stat">
+                    <span>Invitados confirmados:</span>
+                    <span class="export-stat-value" id="confirmedGuests">0</span>
+                </div>
+                <div class="export-stat">
+                    <span>Acompañantes:</span>
+                    <span class="export-stat-value" id="totalCompanions">0</span>
+                </div>
+                <div class="export-stat">
+                    <span>Total de personas:</span>
+                    <span class="export-stat-value" id="totalPeople">0</span>
+                </div>
+            </div>
+
+            <button onclick="exportConfirmations()" class="btn-primary">
+                export_to_excel();
+            </button>
+
+            <div id="exportLoading" class="loading">
+                <p>⏳ Generando archivo Excel...</p>
+            </div>
+
+            <div id="exportMessage" class="message"></div>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test - Servidor Funcionando</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      background: linear-gradient(135deg, #0A1929 0%, #1E3A5F 100%);
+      color: white;
+    }
+    .container {
+      text-align: center;
+      padding: 40px;
+      background: white;
+      color: #0A1929;
+      border-radius: 16px;
+      border: 4px solid #D4AF37;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    }
+    h1 { color: #D4AF37; margin-bottom: 20px; }
+    .status { font-size: 3rem; margin: 20px 0; }
+    button {
+      background: linear-gradient(135deg, #D4AF37 0%, #F4E4C1 100%);
+      color: #0A1929;
+      border: none;
+      padding: 15px 30px;
+      font-size: 1.1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 10px;
+      font-weight: 600;
+    }
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(212, 175, 55, 0.6);
+    }
+    #result {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f0f0f0;
+      border-radius: 8px;
+      font-family: monospace;
+      text-align: left;
+      max-width: 600px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎓 Test del Servidor</h1>
+    <div class="status">✅</div>
+    <p><strong>El servidor está funcionando correctamente</strong></p>
+    <p>Puerto: 3000</p>
+    
+    <button onclick="testAPI()">Probar API de Invitado</button>
+    <button onclick="goToInvite()">Ir a Invitación</button>
+    
+    <div id="result"></div>
+  </div>
+
+  <script>
+    async function testAPI() {
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = '<p>Probando API...</p>';
+      
+      try {
+        const response = await fetch('/api/guest/a395985d-25f1-4b98-99b1-af927b098522');
+        const data = await response.json();
+        
+        resultDiv.innerHTML = `
+          <h3>✅ API Funcionando</h3>
+          <pre>${JSON.stringify(data, null, 2)}</pre>
+        `;
+      } catch (error) {
+        resultDiv.innerHTML = `
+          <h3>❌ Error</h3>
+          <p>${error.message}</p>
+        `;
+      }
+    }
+    
+    function goToInvite() {
+      window.location.href = '/invite/a395985d-25f1-4b98-99b1-af927b098522';
+    }
+  </script>
+</body>
+</html>
