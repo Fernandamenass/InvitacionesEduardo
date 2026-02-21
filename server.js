@@ -131,6 +131,50 @@ app.post('/api/confirm', async (req, res) => {
   }
 });
 
+// POST /api/admin/auth - Admin authentication
+app.post('/api/admin/auth', async (req, res) => {
+  try {
+    const { password } = req.body;
+    
+    if (!password) {
+      return res.status(400).json({ 
+        error: 'Bad request',
+        message: 'Password es requerido'
+      });
+    }
+    
+    const adminPassword = process.env.ADMIN_PASSWORD;
+    
+    if (!adminPassword) {
+      console.error('ADMIN_PASSWORD environment variable is not set');
+      return res.status(500).json({ 
+        error: 'Server configuration error',
+        message: 'Configuración del servidor incompleta'
+      });
+    }
+    
+    if (password === adminPassword) {
+      return res.status(200).json({ 
+        success: true,
+        message: 'Autenticación exitosa'
+      });
+    } else {
+      return res.status(401).json({ 
+        success: false,
+        message: 'Password incorrecto'
+      });
+    }
+    
+  } catch (error) {
+    console.error('Error in authentication:', error);
+    res.status(500).json({ 
+      error: 'Internal server error',
+      message: 'Error al autenticar'
+    });
+  }
+});
+
+
 // POST /api/admin/import - Import guests from Excel
 app.post('/api/admin/import', upload.single('file'), async (req, res) => {
   try {
