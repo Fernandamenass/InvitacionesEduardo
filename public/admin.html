@@ -5,6 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Admin - Graduación Eduardo</title>
     <link rel="stylesheet" href="/styles.css">
+    <script src="/admin.js" defer onerror="handleScriptError()"></script>
+    <script>
+        function handleScriptError() {
+            const authModal = document.getElementById('authModal');
+            if (authModal) {
+                authModal.innerHTML = `
+                    <div class="auth-content">
+                        <h2 style="color: #f44336;">// Error: Script Load Failed</h2>
+                        <p style="color: #e0e0e0;">
+                            No se pudo cargar admin.js<br>
+                            Verifica la ruta del archivo y la conexión.
+                        </p>
+                        <p style="color: #c0c0c0; font-size: 0.9rem; margin-top: 1rem;">
+                            Ruta esperada: /admin.js
+                        </p>
+                    </div>
+                `;
+            }
+            console.error('Failed to load admin.js from /admin.js');
+        }
+    </script>
     <style>
         .admin-container {
             max-width: 1200px;
@@ -465,7 +486,5 @@
             <div id="exportMessage" class="message"></div>
         </div>
     </div>
-
-    <script src="/admin.js"></script>
 </body>
 </html>

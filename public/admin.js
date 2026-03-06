@@ -7,7 +7,47 @@ const AUTH_KEY = 'admin_authenticated';
 // Password is validated against ADMIN_PASSWORD environment variable
 
 function checkAuth() {
-    const isAuthenticated = localStorage.getItem(AUTH_KEY) === 'true';
+    async function authenticate() {
+        // Diagnostic logging for troubleshooting
+        if (typeof window.authenticate === 'undefined') {
+            console.error(
+                'authenticate function is not defined in global scope. ' +
+                'Check that admin.js is loaded correctly with the script tag and that functions are exposed to the window object. ' +
+                'Verify the script tag path is correct: <script src="/admin.js" defer></script>'
+            );
+        }
+
+        const password = document.getElementById('passwordInput').value;
+        const authError = document.getElementById('authError');
+
+        try {
+            // Validate password against server endpoint
+            const response = await fetch('/api/admin/auth', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ password })
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                localStorage.setItem(AUTH_KEY, 'true');
+                authError.classList.remove('visible');
+                showAdminPanel();
+            } else {
+                authError.textContent = data.message || 'Password incorrecto';
+                authError.classList.add('visible');
+                document.getElementById('passwordInput').value = '';
+                document.getElementById('passwordInput').focus();
+            }
+        } catch (error) {
+            console.error('Authentication error:', error);
+            authError.textContent = 'Error al autenticar. Intenta de nuevo.';
+            authError.classList.add('visible');
+        }
+    }
     if (isAuthenticated) {
         showAdminPanel();
     } else {
@@ -28,6 +68,15 @@ function showAdminPanel() {
 }
 
 async function authenticate() {
+    // Diagnostic logging for troubleshooting
+    if (typeof window.authenticate === 'undefined') {
+        console.error(
+            'authenticate function is not defined in global scope. ' +
+            'Check that admin.js is loaded correctly with the script tag and that functions are exposed to the window object. ' +
+            'Verify the script tag path is correct: <script src="/admin.js" defer></script>'
+        );
+    }
+    
     const password = document.getElementById('passwordInput').value;
     const authError = document.getElementById('authError');
     
@@ -57,6 +106,8 @@ async function authenticate() {
         console.error('Authentication error:', error);
         authError.textContent = 'Error al autenticar. Intenta de nuevo.';
         authError.classList.add('visible');
+        document.getElementById('passwordInput').value = '';
+        document.getElementById('passwordInput').focus();
     }
 }
 
@@ -501,3 +552,14 @@ async function clearAllGuests() {
         showLoading('guestsLoading', false);
     }
 }
+
+// ===== GLOBAL FUNCTION EXPOSURE =====
+// Expose functions to global scope for inline event handlers in admin.html
+window.authenticate = authenticate;
+window.loadGuests = loadGuests;
+window.exportConfirmations = exportConfirmations;
+window.copyLink = copyLink;
+window.copyAllLinks = copyAllLinks;
+window.clearAllGuests = clearAllGuests;
+window.confirmImport = confirmImport;
+window.cancelImport = cancelImport;
