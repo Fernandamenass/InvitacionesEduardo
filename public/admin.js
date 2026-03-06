@@ -7,6 +7,9 @@ const AUTH_KEY = 'admin_authenticated';
 // Password is validated against ADMIN_PASSWORD environment variable
 
 function checkAuth() {
+    // Determine authentication state from localStorage
+    const isAuthenticated = localStorage.getItem(AUTH_KEY) === 'true';
+
     async function authenticate() {
         // Diagnostic logging for troubleshooting
         if (typeof window.authenticate === 'undefined') {
@@ -30,14 +33,24 @@ function checkAuth() {
                 body: JSON.stringify({ password })
             });
 
-            const data = await response.json();
+            // Guard: if response has no JSON (HTML error page), read as text
+            const contentType = response.headers.get('content-type') || '';
+            let data = null;
 
-            if (response.ok && data.success) {
+            if (contentType.includes('application/json')) {
+                data = await response.json();
+            } else {
+                const text = await response.text();
+                console.warn('Non-JSON response from /api/admin/auth:', response.status, text.slice(0, 200));
+                data = { success: false, message: `Server error (${response.status})` };
+            }
+
+            if (response.ok && data && data.success) {
                 localStorage.setItem(AUTH_KEY, 'true');
                 authError.classList.remove('visible');
                 showAdminPanel();
             } else {
-                authError.textContent = data.message || 'Password incorrecto';
+                authError.textContent = (data && data.message) ? data.message : 'Password incorrecto';
                 authError.classList.add('visible');
                 document.getElementById('passwordInput').value = '';
                 document.getElementById('passwordInput').focus();
@@ -46,8 +59,11 @@ function checkAuth() {
             console.error('Authentication error:', error);
             authError.textContent = 'Error al autenticar. Intenta de nuevo.';
             authError.classList.add('visible');
+            document.getElementById('passwordInput').value = '';
+            document.getElementById('passwordInput').focus();
         }
     }
+
     if (isAuthenticated) {
         showAdminPanel();
     } else {
